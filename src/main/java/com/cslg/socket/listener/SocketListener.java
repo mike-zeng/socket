@@ -45,7 +45,7 @@ public class SocketListener implements ServletContextListener {
         public void run() {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             logger.info("成功连接到ip为: {}的客户端, time: {}", socket.getInetAddress(), df.format(new Date()));
-            Thread.currentThread().setName(socket.getInetAddress().toString() + " Thread-" +sum.getAndIncrement());
+            Thread.currentThread().setName(socket.getInetAddress().toString() + " Thread-" +sum.incrementAndGet());
             logger.info("工作的线程数为: {}", sum.get());
             ConnectionHolder.add(JDBC.getConnect());
             handleSocket(socket);
@@ -73,14 +73,9 @@ public class SocketListener implements ServletContextListener {
             handleData.setOutputStream(socket.getOutputStream());
             byte[] bytes = new byte[16];
             handleData.getInputStream().read(bytes);
-            logger.info("初始化: {}" + handleData.encode(bytes));
+            logger.info("初始化: {}", handleData.encode(bytes));
             while(true) {
                 if(threadPool.isShutdown()) {
-                    logger.info("剩余的线程数为: {}", sum.decrementAndGet());
-                    //断开和数据库的连接
-                    ConnectionHolder.remove();
-                    //关闭socket
-                    socket.close();
                     break;
                 }
                 //暂停1分钟在获取
@@ -89,6 +84,11 @@ public class SocketListener implements ServletContextListener {
                     break;
                 }
             }
+            //断开和数据库的连接
+            ConnectionHolder.remove();
+            //关闭socket
+            socket.close();
+            logger.info("剩余的线程数为: {}", sum.decrementAndGet());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             logger.error("系统出错", e);
@@ -133,7 +133,11 @@ public class SocketListener implements ServletContextListener {
             //是否还有正在工作的线程
             if(sum.get() == 0) {
                 closeSocket();
-                Thread.yield();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
         }

@@ -136,7 +136,7 @@ public class HandleData {
                 inputStream.read(bytes);
                 String data = encode(bytes);
                 if ("FE".equals(data) && k == 0) {
-                    logger.info("心跳返回: {}" + data);
+                    logger.info("心跳返回: {}", data);
                     feSum++;
                     continue;
                 }
