@@ -102,6 +102,7 @@ public class SocketListener implements ServletContextListener {
                     break;
                 }
                 threadPool.execute(new Handler(serverSocket.accept()));
+                System.out.println("------=================================");
             }
         } catch (IOException e) {
             e.printStackTrace();

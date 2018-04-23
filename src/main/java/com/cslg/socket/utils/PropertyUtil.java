@@ -38,12 +38,12 @@ public class PropertyUtil {
             //通过类加载器进行获取properties文件流
             in = PropertyUtil.class.getClassLoader().getResourceAsStream("order.properties");
             //properties.load(in);
-            propertiesOrder.load(new InputStreamReader(in, "gbk"));
+            propertiesOrder.load(new InputStreamReader(in, "utf-8"));
 
             //通过类加载器进行获取properties文件流
             in = PropertyUtil.class.getClassLoader().getResourceAsStream("name.properties");
             //properties.load(in);
-            propertiesName.load(new InputStreamReader(in, "gbk"));
+            propertiesName.load(new InputStreamReader(in, "utf-8"));
         } catch (FileNotFoundException e) {
             logger.error("properties文件没有找到");
         } catch (IOException e) {
