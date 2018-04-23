@@ -44,9 +44,9 @@ public class SocketListener implements ServletContextListener {
         @Override
         public void run() {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            System.out.println("成功连接到ip为: " + socket.getInetAddress() + "的客户端, time: " + df.format(new Date()));
-            //记录工作的线程数
-            System.out.println("工作的线程数为: " + sum.incrementAndGet());
+            logger.info("成功连接到ip为: {}的客户端, time: {}", socket.getInetAddress(), df.format(new Date()));
+            Thread.currentThread().setName(socket.getInetAddress().toString() + " Thread-" +sum.getAndIncrement());
+            logger.info("工作的线程数为: {}", sum.get());
             ConnectionHolder.add(JDBC.getConnect());
             handleSocket(socket);
         }
@@ -62,6 +62,7 @@ public class SocketListener implements ServletContextListener {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("关闭serverSocket出错", e);
         }
     }
 
@@ -72,14 +73,14 @@ public class SocketListener implements ServletContextListener {
             handleData.setOutputStream(socket.getOutputStream());
             byte[] bytes = new byte[16];
             handleData.getInputStream().read(bytes);
-            System.out.println("初始化: " + handleData.encode(bytes));
+            logger.info("初始化: {}" + handleData.encode(bytes));
             while(true) {
                 if(threadPool.isShutdown()) {
-                    System.out.println("剩余的线程数为: " + sum.decrementAndGet());
+                    logger.info("剩余的线程数为: {}", sum.decrementAndGet());
                     //断开和数据库的连接
                     ConnectionHolder.remove();
+                    //关闭socket
                     socket.close();
-                    //closeSocket();
                     break;
                 }
                 //暂停1分钟在获取
@@ -90,6 +91,7 @@ public class SocketListener implements ServletContextListener {
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            logger.error("系统出错", e);
         }
     }
 
@@ -102,8 +104,8 @@ public class SocketListener implements ServletContextListener {
                 threadPool.execute(new Handler(serverSocket.accept()));
             }
         } catch (IOException e) {
-            logger.error("连接客户端失败", e);
             e.printStackTrace();
+            logger.error("连接客户端失败", e);
         }
     }
 
@@ -116,8 +118,8 @@ public class SocketListener implements ServletContextListener {
                     serverSocket = new ServerSocket(LISTEN_SOCKET_PORT);
                     socketReceive();
                 } catch (IOException e) {
-                    logger.error("创建ServerSocket出错", e);
                     e.printStackTrace();
+                    logger.error("创建ServerSocket出错", e);
                 }
             }
         });

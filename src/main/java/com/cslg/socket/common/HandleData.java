@@ -3,6 +3,8 @@ package com.cslg.socket.common;
 import com.cslg.socket.dao.SaveData;
 import com.cslg.socket.model.Inverter;
 import com.cslg.socket.utils.PropertyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +27,8 @@ public class HandleData {
     private static Map<String, String> nameMap;
 
     private static Set<String> specialOrder  = new HashSet<>();
+
+    private static final Logger logger = LoggerFactory.getLogger(HandleData.class);
 
     static {
         orderMap = PropertyUtil.getPropertyOrderMap();
@@ -132,7 +136,7 @@ public class HandleData {
                 inputStream.read(bytes);
                 String data = encode(bytes);
                 if ("FE".equals(data) && k == 0) {
-                    System.out.println("心跳返回: " + data);
+                    logger.info("心跳返回: {}" + data);
                     feSum++;
                     continue;
                 }
@@ -141,7 +145,7 @@ public class HandleData {
             }
             if (stringBuffer.length() > 0) {
                 String data = stringBuffer.toString();
-                System.out.println(name + ": " + data);
+                logger.info("{}: {}", name, data);
                 String methodName = nameMap.get(name);
                 if(!specialOrder.contains(name)) {
                     setDataByMethodName(methodName, data);
@@ -151,6 +155,7 @@ public class HandleData {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("从流中读取数据异常", e);
         }
         return false;
     }
@@ -165,10 +170,11 @@ public class HandleData {
                     return true;
                 }
             }
-            System.out.println("-------------------------------------");
+            logger.info("-------------------------------------");
             handleMessage();
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("指令写入流中出错", e);
         }
         return false;
     }

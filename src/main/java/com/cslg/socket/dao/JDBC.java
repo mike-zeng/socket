@@ -1,10 +1,15 @@
 package com.cslg.socket.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JDBC {
+
+    private static final Logger logger = LoggerFactory.getLogger(JDBC.class);
 
     private static final String URL = "jdbc:mysql://rm-bp1p625j8640m9ug7uo.mysql.rds.aliyuncs.com:3306/gfjkpt?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8";
 
@@ -21,6 +26,7 @@ public class JDBC {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+            logger.error("获取connection出错", e);
         }
         return connection;
     }
@@ -32,6 +38,7 @@ public class JDBC {
             }
         } catch (SQLException e) {
             e.getErrorCode();
+            logger.error("关闭connection出现异常", e);
         }
     }
 }

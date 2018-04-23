@@ -2,10 +2,14 @@ package com.cslg.socket.dao;
 
 import com.cslg.socket.common.ConnectionHolder;
 import com.cslg.socket.model.Inverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class SaveData {
+
+    private static final Logger logger = LoggerFactory.getLogger(SaveData.class);
 
     public static void main(String[] args) {
         System.out.println(new java.util.Date(System.currentTimeMillis()));
@@ -51,6 +55,7 @@ public class SaveData {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                logger.error("存储数据出现异常", e);
             }
         }
     }
