@@ -145,7 +145,8 @@ public class HandleData {
             }
             if (stringBuffer.length() > 0) {
                 String data = stringBuffer.toString();
-                logger.info("{}: {}", name, data);
+                System.out.println(name + ": " + data);
+                //logger.info("{}: {}", name, data);
                 String methodName = nameMap.get(name);
                 if(!specialOrder.contains(name)) {
                     setDataByMethodName(methodName, data);

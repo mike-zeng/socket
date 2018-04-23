@@ -133,11 +133,7 @@ public class SocketListener implements ServletContextListener {
             //是否还有正在工作的线程
             if(sum.get() == 0) {
                 closeSocket();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Thread.yield();
                 break;
             }
         }
