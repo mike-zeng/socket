@@ -88,7 +88,8 @@ public class SocketListener implements ServletContextListener {
             ConnectionHolder.remove();
             //关闭socket
             socket.close();
-            logger.info("剩余的线程数为: {}", sum.decrementAndGet());
+            sum.decrementAndGet();
+            logger.info("剩余的线程数为: {}", sum.get());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             logger.error("系统出错", e);
@@ -102,7 +103,6 @@ public class SocketListener implements ServletContextListener {
                     break;
                 }
                 threadPool.execute(new Handler(serverSocket.accept()));
-                System.out.println("------=================================");
             }
         } catch (IOException e) {
             e.printStackTrace();
