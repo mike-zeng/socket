@@ -6,10 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SaveData {
 
     private static final Logger logger = LoggerFactory.getLogger(SaveData.class);
+
+    private static AtomicInteger sum = new AtomicInteger(1);
 
     public static void main(String[] args) {
         System.out.println(new java.util.Date(System.currentTimeMillis()));
@@ -25,8 +28,21 @@ public class SaveData {
 
         PreparedStatement preparedStatement = null;
         try {
+            if(sum.get() == 1) {
+                inverter.setInverterName("inverter1");
+                inverter.setLocal("长沙理工大学云塘校区");
+                sum.set(2);
+            } else if(sum.get() == 2) {
+                inverter.setInverterName("inverter1");
+                inverter.setLocal("株洲市");
+                sum.set(3);
+            } else if(sum.get() == 3) {
+                inverter.setInverterName("inverter1");
+                inverter.setLocal("车溪村");
+                sum.set(1);
+            }
             inverter.setInverterName("inverter1");
-            inverter.setLocal("长沙理工大学云塘校区工一");
+            //inverter.setLocal("长沙理工大学云塘校区工一");
             inverter.setTimes(new Timestamp(System.currentTimeMillis()));
             Connection connection = ConnectionHolder.getCurrentConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -48,6 +64,7 @@ public class SaveData {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error(Thread.currentThread().getName() + "存储出现异常", e);
         } finally {
             try {
                 if(preparedStatement != null) {
