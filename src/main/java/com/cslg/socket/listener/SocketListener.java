@@ -44,6 +44,8 @@ public class SocketListener implements ServletContextListener {
 
     static {
         signSet.add("FE");
+        signSet.add("EE");
+        signSet.add("FF");
     }
 
     private boolean dealSign(HandleData handleData, Socket socket) {
