@@ -2,10 +2,12 @@ package com.cslg.socket.dao;
 
 import com.cslg.socket.common.ConnectionHolder;
 import com.cslg.socket.model.Inverter;
+import com.cslg.socket.model.Load;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SaveData {
@@ -19,7 +21,19 @@ public class SaveData {
         System.out.println(new Timestamp(System.currentTimeMillis()));
     }
 
-    public static void save(Inverter inverter) {
+    private static void closePreparedStatement(PreparedStatement preparedStatement) {
+        try {
+            if(preparedStatement != null) {
+                preparedStatement.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error("存储数据出现异常", e);
+        }
+    }
+
+    @SuppressWarnings("SqlDialectInspection")
+    public static void saveInverter(Inverter inverter) {
 
         String sql = "INSERT INTO tb_inverter (local, inverter_name, times, daily_output," +
                 "total_output, a_phase_current, a_phase_voltage, b_phase_current," +
@@ -66,14 +80,37 @@ public class SaveData {
             e.printStackTrace();
             logger.error(Thread.currentThread().getName() + "存储出现异常", e);
         } finally {
-            try {
-                if(preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                logger.error("存储数据出现异常", e);
-            }
+            closePreparedStatement(preparedStatement);
         }
+    }
+
+    @SuppressWarnings("SqlDialectInspection")
+    public static void saveLoad(Load load) {
+        String sql = "INSERT INTO tb_load (load_name, times, local, current, voltage," +
+                " apparent_power, active_power) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        PreparedStatement preparedStatement = null;
+        Connection connection = ConnectionHolder.getCurrentConnection();
+        load.setLoadName("load1");
+        load.setTimes(new Timestamp(System.currentTimeMillis()));
+        load.setLocal("长沙理工大学工一");
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, load.getLoadName());
+            preparedStatement.setTimestamp(2, load.getTimes());
+            preparedStatement.setString(3, load.getLocal());
+            preparedStatement.setDouble(4, load.getCurrent());
+            preparedStatement.setDouble(5, load.getVoltage());
+            preparedStatement.setDouble(6, load.getApparentPower());
+            preparedStatement.setDouble(7, load.getActivePower());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(Thread.currentThread().getName() + "存储出现异常", e);
+        } finally {
+            closePreparedStatement(preparedStatement);
+        }
+
+
     }
 }

@@ -54,7 +54,7 @@
 //            socket = new Socket("127.0.0.1", 10054);
 //            OutputStream outputStream = socket.getOutputStream();
 //            InputStream inputStream = socket.getInputStream();
-//            //outputStream.write(hex2byte("DF"));
+//            outputStream.write(hex2byte("EE"));
 //            int i = 0;
 //            while (true) {
 //                byte[] bytes = new byte[6];
@@ -90,7 +90,7 @@
 //            socket = new Socket("127.0.0.1", 10054);
 //            OutputStream outputStream = socket.getOutputStream();
 //            InputStream inputStream = socket.getInputStream();
-//            outputStream.write(hex2byte("EF"));
+//            outputStream.write(hex2byte("FE"));
 //            int i = 0;
 //            while (true) {
 //                byte[] bytes = new byte[6];
