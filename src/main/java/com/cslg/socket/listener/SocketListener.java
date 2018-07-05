@@ -5,8 +5,6 @@ import com.cslg.socket.service.AbstractService;
 import com.cslg.socket.common.Pool;
 import com.cslg.socket.common.Task;
 import com.cslg.socket.dao.JDBC;
-import com.cslg.socket.service.InverterService;
-import com.cslg.socket.service.LoadService;
 import com.cslg.socket.utils.CodeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +41,9 @@ public class SocketListener implements ServletContextListener {
     public static ConcurrentMap<String, Task> clientSignMap = new ConcurrentHashMap<>();
 
     static {
-        signMap.put("FE", "com.cslg.socket.model.Inverter");
-        signMap.put("EE", "com.cslg.socket.model.Load");
-        signMap.put("FF", null);
+        signMap.put("FE", "com.cslg.socket.service.InverterService");
+        signMap.put("EE", "com.cslg.socket.service.LoadService");
+        signMap.put("FF", "com.cslg.socket.service.InverterService");
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -75,21 +73,24 @@ public class SocketListener implements ServletContextListener {
         byte[] bytes = new byte[1];
         try {
             socket.getInputStream().read(bytes);
+            String sign = CodeUtil.encode(bytes);
+            if(signMap.get(sign) == null) {
+                return null;
+            }
+            Class<?> cls = Class.forName(signMap.get(sign));
+            //getConstructor返回访问权限是public的构造器，getDeclaredConstructor返回所有权限的构造器
+            Object object = cls.getConstructor(String.class).newInstance(sign);
+            if(object instanceof AbstractService) {
+                return (AbstractService) object;
+            }
         } catch (SocketTimeoutException e) {
             logger.info("read()超时");
             return null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        }
-        String sign = CodeUtil.encode(bytes);
-        if(signMap.get(sign) == null) {
-            return null;
-        }
-        if("FE".equals(sign)) {
-            return new InverterService(sign);
-        } else if("EE".equals(sign)) {
-            return new LoadService(sign);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

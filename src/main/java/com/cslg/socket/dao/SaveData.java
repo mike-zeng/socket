@@ -93,7 +93,11 @@ public class SaveData {
         Connection connection = ConnectionHolder.getCurrentConnection();
         load.setLoadName("load1");
         load.setTimes(new Timestamp(System.currentTimeMillis()));
-        load.setLocal("长沙理工大学工一");
+
+        String[] s = {"工科一号楼", "工科二号楼", "综合教学楼"};
+        int i = (int) (Math.random() * s.length);
+
+        load.setLocal("长沙理工大学" + s[i]);
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, load.getLoadName());
@@ -110,7 +114,5 @@ public class SaveData {
         } finally {
             closePreparedStatement(preparedStatement);
         }
-
-
     }
 }

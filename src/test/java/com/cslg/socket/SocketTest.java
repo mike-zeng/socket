@@ -94,7 +94,7 @@
 //                System.out.println(i);
 //                //String searchSql = "SELECT * FROM tb_inverter WHERE id = " + i;
 //                //String updateSql = "UPDATE tb_inverter SET daily_output = ?, total_output = ? WHERE id = " + i;
-//                String updateSql = "UPDATE tb_inverter SET local = ? WHERE id = " + i;
+//                String updateSql = "UPDATE tb_load SET local = ? WHERE id = " + i;
 //                //preparedStatement = connection.prepareStatement(searchSql);
 //                //ResultSet resultSet = preparedStatement.executeQuery();
 //                //if(resultSet.next()) {
