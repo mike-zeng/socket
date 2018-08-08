@@ -6,6 +6,7 @@
 //import java.util.ArrayList;
 //import java.util.Arrays;
 //import java.util.List;
+//import java.util.Scanner;
 //
 //public class TestPool {
 //
@@ -52,14 +53,14 @@
 //        int m = 7;
 //        int n = 3;
 //        int s = m * n;
-//        if(m < n) {
+//        if (m < n) {
 //            int k = m;
 //            m = n;
 //            n = k;
 //        }
 //        int min = n;
-//        while(min > 0) {
-//            if(m % min == 0 && n % min == 0) {
+//        while (min > 0) {
+//            if (m % min == 0 && n % min == 0) {
 //                break;
 //            }
 //            min--;
@@ -100,4 +101,6 @@
 //        }
 //        System.out.println(sum);
 //    }
+//
+//
 //}

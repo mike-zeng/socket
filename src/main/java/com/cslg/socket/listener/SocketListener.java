@@ -41,9 +41,9 @@ public class SocketListener implements ServletContextListener {
     public static ConcurrentMap<String, Task> clientSignMap = new ConcurrentHashMap<>();
 
     static {
-        signMap.put("FE", "com.cslg.socket.service.InverterService");
-        signMap.put("EE", "com.cslg.socket.service.LoadService");
-        signMap.put("FF", "com.cslg.socket.service.InverterService");
+        signMap.put("AA", "com.cslg.socket.service.InverterService");
+        signMap.put("AB", "com.cslg.socket.service.LoadService");
+        signMap.put("AC", "com.cslg.socket.service.InverterService");
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -53,7 +53,7 @@ public class SocketListener implements ServletContextListener {
         Task task = new Task(socket, thread);
         if(!thread.getName().contains(sign)) {
             String[] str = thread.getName().split(" ");
-            String name = str.length > 1 ? str[1] : str[0];
+            String name = str.length > 1 ? str[2] : str[0];
             thread.setName("该客户端标识号: " + sign + "--工作线程名称为: " + name);
         }
         if(clientSignMap.containsKey(sign)) {
