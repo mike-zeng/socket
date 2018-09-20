@@ -56,6 +56,8 @@ public class SocketListener implements ServletContextListener {
             String name = str.length > 1 ? str[2] : str[0];
             thread.setName("该客户端标识号: " + sign + "--工作线程名称为: " + name);
         }
+
+        //TODO
         if(clientSignMap.containsKey(sign)) {
             try {
                 clientSignMap.get(sign).getSocket().close();
